@@ -8,15 +8,22 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
 
     steps:
       - name: Check out code
         uses: actions/checkout@v4
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - id: "auth"
+        uses: "google-github-actions/auth@v2"
         with:
-          go-version: "1.23.0"
+          workload_identity_provider: "projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
+          service_account: "my-service-account@my-project.iam.gserviceaccount.com"
 
-      - name: Build
-        run: (./scripts/buildprod.sh)
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v3"
+
+      - name: "Trigger Cloud Build"
+        run: (gcloud builds submit --tag us-central1-docker.pkg.dev/karim-marayta/notely-ar-repo/notely:latest .)
