@@ -1,7 +1,7 @@
 FROM --platform=linux/amd64 debian:stable-slim
 
 RUN apt-get update && \
-  apt-get install -y ca-certificates golang-go=1.24
+  apt-get install -y ca-certificates golang-go
 
 
 WORKDIR /app
