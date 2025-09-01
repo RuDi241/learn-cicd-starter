@@ -1,7 +1,13 @@
 FROM --platform=linux/amd64 debian:stable-slim
 
-RUN apt-get update && apt-get install -y ca-certificates
+RUN apt-get update && \
+  apt-get install -y ca-certificates golang-go=1.24
 
-ADD notely /usr/bin/notely
+
+WORKDIR /app
+
+COPY . .
+
+RUN go build -o notely . && mv notely /usr/bin/notely
 
 CMD ["notely"]
